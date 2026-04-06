@@ -1,0 +1,58 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect default branch
+        run: |
+          BRANCH=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
+          echo "DEFAULT_BRANCH=$BRANCH" >> $GITHUB_ENV
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build module
+        run: |
+          docker build -t schwung-builder -f Dockerfile .
+          CONTAINER_ID=$(docker create -w /build schwung-builder bash -c "\
+            apt-get update && apt-get install -y --no-install-recommends git ca-certificates && \
+            git clone --depth 1 https://github.com/charlesvestal/schwung.git /tmp/schwung && \
+            SCHWUNG_SRC=/tmp/schwung/src bash build-module.sh && \
+            cd dist && tar -czvf euclidrum-module.tar.gz euclidrum/")
+          docker cp euclidrum.c "$CONTAINER_ID:/build/euclidrum.c"
+          docker cp module.json "$CONTAINER_ID:/build/module.json"
+          docker cp build-module.sh "$CONTAINER_ID:/build/build-module.sh"
+          docker start -a "$CONTAINER_ID"
+          mkdir -p dist
+          docker cp "$CONTAINER_ID:/build/dist/euclidrum-module.tar.gz" dist/euclidrum-module.tar.gz
+          docker rm "$CONTAINER_ID"
+
+      - name: Update release.json
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          REPO=${{ github.repository }}
+          cat > release.json <<EOFJ
+          {
+            "version": "${VERSION}",
+            "download_url": "https://github.com/${REPO}/releases/download/v${VERSION}/euclidrum-module.tar.gz"
+          }
+          EOFJ
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git fetch origin "$DEFAULT_BRANCH"
+          git checkout -f "$DEFAULT_BRANCH"
+          git add release.json
+          git commit -m "Update release.json to v${VERSION}" || true
+          git push origin "$DEFAULT_BRANCH"
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: dist/euclidrum-module.tar.gz
