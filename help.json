@@ -1,0 +1,158 @@
+{
+  "title": "Euclidrum",
+  "children": [
+    {
+      "title": "About",
+      "lines": [
+        "8-lane generative",
+        "Euclidean drum",
+        "sequencer. MIDI FX.",
+        "",
+        "32 presets, polymetric",
+        "rates, mutation/drift,",
+        "per-lane freq/decay",
+        "CC output.",
+        "",
+        "Purpose-built",
+        "companion for Weird",
+        "Dreams: each lane",
+        "sends a note + CC70-77",
+        "(freq) + CC80-87",
+        "(decay) per pulse."
+      ]
+    },
+    {
+      "title": "Page: Root",
+      "lines": [
+        "Quick lane on/off.",
+        "",
+        "K1-K8 Lane 1-8 enable",
+        "",
+        "Toggle each lane",
+        "independently from",
+        "the front page; dive",
+        "into per-lane pages",
+        "for steps, pulses,",
+        "rotation, etc."
+      ]
+    },
+    {
+      "title": "Page: Global",
+      "lines": [
+        "K1 Preset (32 slots)",
+        "K2 Rnd Preset",
+        "    random factory",
+        "K3 Rate",
+        "    master clock",
+        "    division (lanes",
+        "    polymeter from",
+        "    here)",
+        "K4 Swing",
+        "    even-step delay",
+        "K5 Global Gate",
+        "    note length",
+        "K6 Mutation",
+        "    per-cycle pattern",
+        "    drift amount",
+        "K7 Rand Cycle",
+        "    cycles before",
+        "    mutation fires",
+        "K8 Global Vel Rnd",
+        "    velocity jitter"
+      ]
+    },
+    {
+      "title": "Pages: Lane 1-8",
+      "lines": [
+        "Per-lane controls.",
+        "",
+        "K1 Enabled",
+        "K2 Steps",
+        "    pattern length",
+        "    (Bjorklund)",
+        "K3 Pulses",
+        "    active steps",
+        "K4 Rotation",
+        "    pattern offset",
+        "K5 Rate",
+        "    lane multiplier",
+        "    vs global Rate",
+        "K6 Accent",
+        "    accent prob",
+        "K7 Freq",
+        "    CC70+(N-1) value",
+        "    sent on each pulse",
+        "K8 Decay",
+        "    CC80+(N-1) value",
+        "    sent on each pulse"
+      ]
+    },
+    {
+      "title": "Polymetric rates",
+      "lines": [
+        "Each lane's Rate is",
+        "an independent",
+        "multiplier of the",
+        "global clock:",
+        "",
+        " 1/4, 1/4T, 1/4D",
+        " 1/8, 1/8T, 1/8D",
+        " 1/16, 1/16T,",
+        " 1/16D, 1/32...",
+        "",
+        "Set lanes to different",
+        "rates for evolving",
+        "polymeter (4 vs 3 vs",
+        "5 steps over the same",
+        "bar = generative",
+        "tension and release)."
+      ]
+    },
+    {
+      "title": "MIDI output",
+      "lines": [
+        "Lane N (1-8) sends:",
+        "",
+        " Note On  36 + (N-1)",
+        "          velocity",
+        "          accent-",
+        "          scaled",
+        "",
+        " CC 70+(N-1) = Freq",
+        " CC 80+(N-1) = Decay",
+        "",
+        "These map directly",
+        "to Weird Dreams'",
+        "per-voice freq/decay",
+        "CC inputs. Drop Weird",
+        "Dreams after Euclidrum",
+        "for instant 8-voice",
+        "drum patterns."
+      ]
+    },
+    {
+      "title": "Tips",
+      "lines": [
+        "8-pulse / 16-step",
+        " lane = classic",
+        " backbeat.",
+        "",
+        "Different rates per",
+        " lane = polymeter,",
+        " patterns drift in",
+        " and out of phase.",
+        "",
+        "Mutation 10-30% gives",
+        " subtle evolution;",
+        " >50% gets glitchy.",
+        "",
+        "Per-lane Freq/Decay",
+        " on each pulse means",
+        " every hit can be a",
+        " different drum tone",
+        " on the downstream",
+        " synth."
+      ]
+    }
+  ]
+}

@@ -29,6 +29,7 @@ jobs:
             cd dist && tar -czvf euclidrum-module.tar.gz euclidrum/")
           docker cp euclidrum.c "$CONTAINER_ID:/build/euclidrum.c"
           docker cp module.json "$CONTAINER_ID:/build/module.json"
+          if [ -f help.json ]; then docker cp help.json "$CONTAINER_ID:/build/help.json"; fi
           docker cp build-module.sh "$CONTAINER_ID:/build/build-module.sh"
           docker start -a "$CONTAINER_ID"
           mkdir -p dist

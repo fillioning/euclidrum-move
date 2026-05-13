@@ -37,6 +37,7 @@ if [ -z "$CROSS_PREFIX" ] && [ ! -f "/.dockerenv" ]; then
 
     docker cp "$WIN_ROOT/euclidrum.c" "$CONTAINER_ID:/build/euclidrum.c"
     docker cp "$WIN_ROOT/module.json" "$CONTAINER_ID:/build/module.json"
+    [ -f "$WIN_ROOT/help.json" ] && docker cp "$WIN_ROOT/help.json" "$CONTAINER_ID:/build/help.json"
     docker cp "$WIN_ROOT/build-module.sh" "$CONTAINER_ID:/build/build-module.sh"
     docker cp "$SCHWUNG_ROOT" "$CONTAINER_ID:/schwung-src"
 
@@ -82,6 +83,7 @@ ${CROSS_PREFIX}gcc -O2 -fPIC -ffast-math -shared \
 
 echo "Packaging..."
 cp module.json dist/euclidrum/module.json
+[ -f help.json ] && cp help.json dist/euclidrum/help.json
 cp build/dsp.so dist/euclidrum/dsp.so
 chmod +x dist/euclidrum/dsp.so
 
