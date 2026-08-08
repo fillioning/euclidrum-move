@@ -17,6 +17,22 @@ jobs:
           BRANCH=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
           echo "DEFAULT_BRANCH=$BRANCH" >> $GITHUB_ENV
 
+      - name: Sync module.json version from tag
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          python3 - "$VERSION" <<'PYEOF'
+          import json, sys, pathlib
+          version = sys.argv[1]
+          for p in ("module.json", "src/module.json"):
+              path = pathlib.Path(p)
+              if not path.exists():
+                  continue
+              data = json.loads(path.read_text())
+              data["version"] = version
+              path.write_text(json.dumps(data) + "\n")
+              print(f"  {p}: version -> {version}")
+          PYEOF
+
       - uses: docker/setup-buildx-action@v3
 
       - name: Build module
@@ -36,24 +52,44 @@ jobs:
           docker cp "$CONTAINER_ID:/build/dist/euclidrum-module.tar.gz" dist/euclidrum-module.tar.gz
           docker rm "$CONTAINER_ID"
 
-      - name: Update release.json
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: dist/euclidrum-module.tar.gz
+
+      - name: Update release.json on default branch
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           REPO=${{ github.repository }}
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git fetch origin "$DEFAULT_BRANCH"
+          git checkout -f "$DEFAULT_BRANCH"
+          # Regenerate release.json AFTER checking out the default branch so the
+          # change actually lands on it (previous flow generated the file at the
+          # tag and then discarded it via the subsequent checkout).
           cat > release.json <<EOFJ
           {
             "version": "${VERSION}",
             "download_url": "https://github.com/${REPO}/releases/download/v${VERSION}/euclidrum-module.tar.gz"
           }
           EOFJ
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git fetch origin "$DEFAULT_BRANCH"
-          git checkout -f "$DEFAULT_BRANCH"
-          git add release.json
-          git commit -m "Update release.json to v${VERSION}" || true
-          git push origin "$DEFAULT_BRANCH"
-
-      - uses: softprops/action-gh-release@v1
-        with:
-          files: dist/euclidrum-module.tar.gz
+          # Also sync module.json versions on the default branch so the tree
+          # stays consistent with what was tagged.
+          python3 - "$VERSION" <<'PYEOF'
+          import json, sys, pathlib
+          version = sys.argv[1]
+          for p in ("module.json", "src/module.json"):
+              path = pathlib.Path(p)
+              if not path.exists():
+                  continue
+              data = json.loads(path.read_text())
+              data["version"] = version
+              path.write_text(json.dumps(data) + "\n")
+          PYEOF
+          git add release.json module.json src/module.json
+          if git diff --cached --quiet; then
+            echo "No changes on $DEFAULT_BRANCH"
+          else
+            git commit -m "Sync release.json + module.json for v${VERSION}"
+            git push origin "$DEFAULT_BRANCH"
+          fi
