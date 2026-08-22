@@ -1349,7 +1349,7 @@ static void build_chain_params(euclidrum_instance_t *inst) {
 
     /* Global params */
     appendf(buf, buf_len, &pos,
-        "{\"key\":\"rnd_preset\",\"name\":\"Rnd Preset\",\"type\":\"enum\",\"options\":[\"\\u2014\",\"Rnd!\"]},");
+        "{\"key\":\"rnd_preset\",\"name\":\"Rnd Preset\",\"type\":\"enum\",\"access\":\"write\",\"options\":[\"\\u2014\",\"Rnd!\"]},");
     appendf(buf, buf_len, &pos,
         "{\"key\":\"rate\",\"name\":\"Rate\",\"type\":\"enum\",\"options\":[\"1/32\",\"1/16T\",\"1/16\",\"1/8T\",\"1/8\",\"1/4T\",\"1/4\",\"1/2\",\"1\"]},"
         "{\"key\":\"sync\",\"name\":\"Sync\",\"type\":\"enum\",\"options\":[\"internal\",\"clock\"]},"
@@ -1631,7 +1631,22 @@ static void euclidrum_set_param(void *instance, const char *key, const char *val
         }
         if (!found) load_preset(inst, clamp_int(atoi(val), 0, NUM_PRESETS - 1));
     }
-    else if (strcmp(key, "rnd_preset") == 0) { if (val && strcmp(val, "\xe2\x80\x94") != 0) generate_random_preset(inst); }
+    else if (strcmp(key, "rnd_preset") == 0) {
+        /*
+         * Fire ONLY on the explicit fire value.
+         *
+         * This was `strcmp(val, "\xe2\x80\x94") != 0` — fire on anything that
+         * is not the em-dash. But the em-dash is option 0, so a host or a patch
+         * restore writing the INDEX "0" — which MEANS "do nothing" — randomised
+         * all eight lanes and destroyed the kit. The safe spelling was the one
+         * value that could not be sent by anything working in indices.
+         *
+         * Both conventions are accepted, since get_param reports the name and a
+         * caller that has not learned that yet will send an index.
+         */
+        if (val && (strcmp(val, "Rnd!") == 0 || strcmp(val, "1") == 0))
+            generate_random_preset(inst);
+    }
     else if (strcmp(key, "passthrough") == 0) inst->passthrough = parse_on_off(val);
     else if (strcmp(key, "state") == 0) {
         /* Bulk state restore */
