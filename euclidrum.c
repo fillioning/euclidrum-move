@@ -1349,7 +1349,7 @@ static void build_chain_params(euclidrum_instance_t *inst) {
 
     /* Global params */
     appendf(buf, buf_len, &pos,
-        "{\"key\":\"rnd_preset\",\"name\":\"Rnd Preset\",\"type\":\"enum\",\"options\":[\"\\u2014\",\"Rnd!\"]},");
+        "{\"key\":\"rnd_preset\",\"name\":\"Rnd Preset\",\"type\":\"enum\",\"access\":\"write\",\"options\":[\"\\u2014\",\"Rnd!\"]},");
     appendf(buf, buf_len, &pos,
         "{\"key\":\"rate\",\"name\":\"Rate\",\"type\":\"enum\",\"options\":[\"1/32\",\"1/16T\",\"1/16\",\"1/8T\",\"1/8\",\"1/4T\",\"1/4\",\"1/2\",\"1\"]},"
         "{\"key\":\"sync\",\"name\":\"Sync\",\"type\":\"enum\",\"options\":[\"internal\",\"clock\"]},"
