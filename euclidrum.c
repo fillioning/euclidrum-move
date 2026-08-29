@@ -1358,10 +1358,10 @@ static void build_chain_params(euclidrum_instance_t *inst) {
         "{\"key\":\"max_voices\",\"name\":\"Voices\",\"type\":\"int\",\"min\":1,\"max\":64,\"step\":1},"
         "{\"key\":\"global_velocity\",\"name\":\"Vel\",\"type\":\"int\",\"min\":1,\"max\":127,\"step\":1},"
         "{\"key\":\"global_gate\",\"name\":\"Gate\",\"type\":\"int\",\"min\":1,\"max\":1600,\"step\":1},"
-        "{\"key\":\"global_rnd_seed\",\"name\":\"Rnd Seed\",\"type\":\"int\",\"min\":0,\"max\":65535,\"step\":1},"
+        "{\"key\":\"global_rnd_seed\",\"short_name\":\"Rnd\",\"name\":\"Rnd Seed\",\"type\":\"int\",\"min\":0,\"max\":65535,\"step\":1},"
         "{\"key\":\"rand_cycle\",\"name\":\"Rnd Cyc\",\"type\":\"int\",\"min\":1,\"max\":128,\"step\":1},"
         "{\"key\":\"mutation\",\"name\":\"Mutate\",\"type\":\"int\",\"min\":0,\"max\":100,\"step\":1},"
-        "{\"key\":\"mutation_seed\",\"name\":\"Mut Seed\",\"type\":\"int\",\"min\":0,\"max\":65535,\"step\":1},"
+        "{\"key\":\"mutation_seed\",\"short_name\":\"Mut\",\"name\":\"Mut Seed\",\"type\":\"int\",\"min\":0,\"max\":65535,\"step\":1},"
         "{\"key\":\"global_vel_rnd\",\"name\":\"Vel Rnd\",\"type\":\"int\",\"min\":0,\"max\":64,\"step\":1},"
         "{\"key\":\"preset\",\"name\":\"Preset\",\"type\":\"enum\",\"options\":[");
     /* Emit all preset names as enum options */
